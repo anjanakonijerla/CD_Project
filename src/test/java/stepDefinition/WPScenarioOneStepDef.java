@@ -1,11 +1,24 @@
 package stepDefinition;
 
+import static org.junit.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
 
-import java.util.concurrent.TimeUnit;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.testng.annotations.Test;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -19,10 +32,10 @@ public class WPScenarioOneStepDef extends BrowserInstance {
 	String ageHelpText;
 
 	@Given("^Open url and navigate to Westpac KiwiSaver Scheme Retirement Calculator$")
-	public void open_url_and_navigate_to_Westpac_KiwiSaver_Scheme_Retirement_Calculator() throws Throwable {
+	public void open_url_and_navigate_to_Westpac_KiwiSaver_Scheme_Retirement_Calculator() throws IOException, InterruptedException {
 		driver = BrowserInstance.getBrowser("Chrome", 74, "windows");
 		driver.get(PropertiesFileReader.getProperty("browser.baseURL"));
-		Thread.sleep(5000);
+		Thread.sleep(3000);
 		driver.findElement(By.linkText("KiwiSaver")).click();
 		driver.findElement(By.xpath("//*[@id=\"ubermenu-item-cta-kiwisaver-calculators-ps\"]")).click();
 		driver.findElement(By.linkText("Click here to get started.")).click();
@@ -30,7 +43,7 @@ public class WPScenarioOneStepDef extends BrowserInstance {
 	}
 
 	@When("^User Clicks information icon beside field cuurent age$")
-	public String user_Clicks_information_icon_beside_fields() throws Throwable {
+	public String user_Clicks_information_icon_beside_fields( )  {
 
 		WebElement frame = driver.findElement(By.cssSelector("div#calculator-embed iframe"));
 		driver.switchTo().frame(frame);
@@ -42,15 +55,22 @@ public class WPScenarioOneStepDef extends BrowserInstance {
 		return ageHelpText;
 	}
 
-	
+	@Then("^user should be able to see help text \"([^\"]*)\"$")
+	public void user_should_be_able_to_see_help_text(String expectedResult) {
 
-		@Then("^user should be able to see help text \"([^\"]*)\"$")
-		public void user_should_be_able_to_see_help_text(String expectedResult) throws Throwable {
-
+		try {
 			assertEquals(expectedResult, ageHelpText);
-			Utilites.captureScreenShot(driver, "StepOne");
-			driver.navigate().refresh();
-			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-			
+		} catch (AssertionError error) {
+			Utilites.captureScreenShot(driver, "StepOne_Assertion_Falied_");
+			throw error;
 		}
+
+		driver.navigate().refresh();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Utilites.captureScreenShot(driver, "StepOne");
+	}
 }
