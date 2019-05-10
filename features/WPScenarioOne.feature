@@ -1,4 +1,4 @@
-@UATTest
+@Test
 Feature: I want that while using the KiwiSaver Retirement Calculator all fields in the calculator have got the information icon present
 
  @TestCase1

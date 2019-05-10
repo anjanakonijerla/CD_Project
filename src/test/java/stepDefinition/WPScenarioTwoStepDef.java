@@ -36,27 +36,17 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 	@Given("^I have a fields with following details$")
 	public void i_have_a_fields_with_following_details(DataTable dt) throws Throwable {
 
-		// Properties properties = obj.getProperty();
-		// driver = BrowserInstance.OpenBrowser(driver,
-		// properties.getProperty("browser.name"),
-		// properties.getProperty("browser.baseURLtwo"));
-		// Thread.sleep(3000);
-		// WebElement frame = driver.findElement(By.cssSelector("div#calculator-embed
-		// iframe"));
-		// driver.switchTo().frame(frame);
-		// // Write code here that turns the phrase above into concrete actions
-		// // For automatic transformation, change DataTable to one of
-		// // List<YourType>, List<List<E>>, List<Map<K,V>> or Map<K,V>.
-		// // E,K,V must be a scalar (String, Integer, Date, enum etc)
-
 		List<Map<String, String>> list = dt.asMaps(String.class, String.class);
 
 		// find element by xpath for age field and pass age value from input data table
 		if (list.get(0).get("age") != null) {
-			
+
+			WebElement frame = driver.findElement(By.cssSelector("div#calculator-embed iframe"));
+			driver.switchTo().frame(frame);
+
 			JavascriptExecutor js = (JavascriptExecutor) driver;
-			
-			WebElement chart = driver.findElement(By.xpath("//label[text()='Current age'])"));
+
+			WebElement chart = driver.findElement(By.xpath("//label[text()='Current age']//following::input[1]"));
 
 			js.executeScript("arguments[0].scrollIntoView();", chart);
 
@@ -82,12 +72,7 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 			}
 		}
 		// // find element for salary and pass value from datatable
-		//
-		// if (list.get(0).get("salary") != null) {
-		// driver.findElement(By.xpath(
-		// "//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div/input"))
-		// .sendKeys(list.get(0).get("salary"));
-		// }
+
 
 		if (!(list.get(0).get("salary")).isEmpty()) {
 			try {
@@ -123,9 +108,10 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 			WebElement pirDropDown;
 			WebElement pirStatusDropDown;
 
-			if ((list.get(0).get("salary")).equalsIgnoreCase("Employed")) {
+			if ((list.get(0).get("employment")).equalsIgnoreCase("Employed")) {
 				pirDropDown = driver.findElement(By.xpath(
 						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"));
+
 				pirDropDown.click();
 
 				pirStatusDropDown = driver.findElement(By.xpath(
@@ -156,22 +142,18 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 
 		if (list.get(0).get("kiwibalance") != null) {
 
-			// driver.findElement(By.xpath(
-			// "//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[7]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div/input"))
-			// .sendKeys(list.get(0).get("kiwibalance"));
+			
 			driver.findElement(By.xpath("//label[text()='Current KiwiSaver balance']//following::input[1]"))
 					.sendKeys(list.get(0).get("kiwibalance"));
 
-			// driver.findElement(By.xpath("//li//span[text()='"+investorRateVal+"%']"))
+			
 		}
 		// find element for volunteer and pass value from datatable
 		if (list.get(0).get("Voluntary") != null) {
 
 			driver.findElement(By.xpath("//label[text()='Voluntary contributions']//following::input[1]"))
 					.sendKeys(list.get(0).get("Voluntary"));
-			// driver.findElement(By.xpath(
-			// "//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[1]/div/input"))
-			// .sendKeys(list.get(0).get("Voluntary"));
+			
 		}
 		// find dropdown for frequency and pass value from datatable
 
@@ -209,7 +191,7 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 		// find element for risk radio button and pass value from data table
 		if (!(list.get(0).get("profile")).isEmpty()) {
 			WebElement radioButton;
-			if ((list.get(0).get("salary")).equalsIgnoreCase("Employed")) {
+			if ((list.get(0).get("employment")).equalsIgnoreCase("Employed")) {
 
 				radioButton = driver.findElement(By.xpath(
 						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[9]/div/div/div/div[2]/div[1]/div[1]/div/div/div"));
@@ -236,9 +218,7 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 
 			driver.findElement(By.xpath("//label[text()='Savings goal at retirement']//following::input[1]"))
 					.sendKeys(list.get(0).get("goal"));
-			// driver.findElement(By.xpath(
-			// "//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[10]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div/input"))
-			// .sendKeys(list.get(0).get("goal"));
+			
 		}
 	}
 
@@ -256,7 +236,7 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 		assertTrue(result.contains("your KiwiSaver balance is estimated to be"));
 
 		JavascriptExecutor js = (JavascriptExecutor) driver;
-		
+
 		WebElement chart = driver.findElement(By.className("results-heading"));
 
 		js.executeScript("arguments[0].scrollIntoView();", chart);
@@ -267,15 +247,15 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 
 			String timestamp = new SimpleDateFormat("yyyy_MM_dd__hh_mm_ss").format(new Date());
 
-			FileUtils.copyFile(src,
-					new File("C:\\Users\\visitor\\assigment _Backup\\resultscreens\\" + "Screenshot" + timestamp + ".png"));
+			FileUtils.copyFile(src, new File(
+					"C:\\Users\\visitor\\assigment _Backup\\resultscreens\\" + "Screenshot" + timestamp + ".png"));
 		}
 
 		catch (IOException e) {
 			System.out.println(e.getMessage());
 
 		}
-		
+
 		driver.navigate().refresh();
 		Thread.sleep(3000);
 	}

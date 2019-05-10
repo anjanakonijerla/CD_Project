@@ -2,10 +2,17 @@ package stepDefinition;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -65,6 +72,21 @@ public class WPScenarioOneStepDef extends BrowserInstance {
 	public void user_should_be_able_to_see_help_text(String expectedResult) throws Throwable {
 
 		assertEquals(expectedResult, ageHelpText);
+		driver.navigate().refresh();
+		Thread.sleep(3000);
+		File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		try {
+			// now copy the screenshot to desired location using copyFile //method
 
+			String timestamp = new SimpleDateFormat("yyyy_MM_dd__hh_mm_ss").format(new Date());
+
+			FileUtils.copyFile(src,
+					new File("C:\\Users\\visitor\\assigment _Backup\\resultscreens\\" + "Screenshot" + timestamp + ".png"));
+		}
+
+		catch (IOException e) {
+			System.out.println(e.getMessage());
+
+		}
 	}
 }
