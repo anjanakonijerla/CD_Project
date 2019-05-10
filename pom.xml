@@ -1,57 +1,67 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.automation</groupId>
-  <artifactId>com.automation</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+	<groupId>com.automation</groupId>
+	<artifactId>com.automation</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-  <name>com.automation</name>
-  <url>http://maven.apache.org</url>
+	<name>com.automation</name>
+	<url>http://maven.apache.org</url>
 
-  <properties>
-  <serenity.version>1.9.6</serenity.version>
+	<properties>
+		<serenity.version>1.9.6</serenity.version>
 
-<serenity.maven.version>1.9.4</serenity.maven.version>
+		<serenity.maven.version>1.9.4</serenity.maven.version>
 
-<serenity.cucumber.version>1.9.4</serenity.cucumber.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-   <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.19.1</version>
-            </plugin>
+		<serenity.cucumber.version>1.9.4</serenity.cucumber.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-            </plugin>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.19.1</version>
+			</plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <outputDirectory>${basedir}/target/site/surefire-report.html</outputDirectory>
-                </configuration>
-                <!--<configuration>-->
-                    <!--<outputDirectory>C:\Users\ab66378\Desktop</outputDirectory>-->
-                <!--</configuration>-->
-            </plugin>
-        </plugins>
-    </reporting>
-    
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
+			</plugin>
 
-<dependencies>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<outputDirectory>${basedir}/target/site/surefire-report.html</outputDirectory>
+				</configuration>
+				<!--<configuration> -->
+				<!--<outputDirectory>C:\Users\ab66378\Desktop</outputDirectory> -->
+				<!--</configuration> -->
+			</plugin>
+		</plugins>
+	</reporting>
+
+
+	<dependencies>
 		<!-- These are the cucumber dependencies -->
-		
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.8.0</version>
+		</dependency>
 
-		
+
+
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-java</artifactId>
@@ -72,7 +82,7 @@
 			<version>4.12</version>
 		</dependency>
 
-		<!-- These are the selenium-webdriver dependencies -->	
+		<!-- These are the selenium-webdriver dependencies -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
@@ -95,18 +105,18 @@
 			<version>3.5.2</version>
 		</dependency>
 		<dependency>
-<groupId>org.seleniumhq.selenium</groupId>
-<artifactId>selenium-chrome-driver</artifactId>
-<version>2.50.0</version>
-</dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-chrome-driver</artifactId>
+			<version>2.50.0</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
-<dependency>
-    <groupId>org.testng</groupId>
-    <artifactId>testng</artifactId>
-    <version>6.14.3</version>
-    <scope>test</scope>
-</dependency>
-		
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.14.3</version>
+			<scope>test</scope>
+		</dependency>
 
-</dependencies>
-		</project>
+
+	</dependencies>
+</project>

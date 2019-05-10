@@ -33,9 +33,7 @@ public class WPScenarioOneStepDef extends BrowserInstance {
 
 	@Given("^Open url and navigate to Westpac KiwiSaver Scheme Retirement Calculator$")
 	public void open_url_and_navigate_to_Westpac_KiwiSaver_Scheme_Retirement_Calculator() throws IOException, InterruptedException {
-//		driver = BrowserInstance.getBrowser("Chrome", 74, "windows");
-//		driver.get(PropertiesFileReader.getProperty("browser.baseURL"));
-//		Thread.sleep(3000);
+
 		driver.findElement(By.linkText("KiwiSaver")).click();
 		driver.findElement(By.xpath("//*[@id=\"ubermenu-item-cta-kiwisaver-calculators-ps\"]")).click();
 		driver.findElement(By.linkText("Click here to get started.")).click();

@@ -20,157 +20,52 @@ import utility.InputType;
 import utility.Utilites;
 
 public class WPScenarioTwoStepDef extends BrowserInstance {
+	
 
 	@Given("^I have a fields with following details$")
-	public void i_have_a_fields_with_following_details(DataTable dt)  {
+	public void i_have_a_fields_with_following_details(DataTable dt) {
 
 		List<Map<String, String>> inputData = dt.asMaps(String.class, String.class);
+
+		String age = inputData.get(0).get("age");
+		String employment = inputData.get(0).get("employment");
+		String salary = inputData.get(0).get("salary");
+		String kiwisaver = inputData.get(0).get("kiwisaver");
+		String pir = inputData.get(0).get("PIR");
+		String kiwibalance = inputData.get(0).get("kiwibalance");
+		String voluntary = inputData.get(0).get("Voluntary");
+		String frequency = inputData.get(0).get("Frequency");
+		String profile = inputData.get(0).get("profile");
+		String goal = inputData.get(0).get("goal");
+
 		WebElement frame = driver.findElement(By.cssSelector("div#calculator-embed iframe"));
 		driver.switchTo().frame(frame);
-
+		
+		
 		// find element by xpath for age field and pass age value from input data table
-
-		if (inputData.get(0).get("age") != null) {
-
-			JavascriptExecutor js = (JavascriptExecutor) driver;
-
-			WebElement chart = driver.findElement(By.xpath("//label[text()='Current age']//following::input[1]"));
-
-			js.executeScript("arguments[0].scrollIntoView();", chart);
-
-			InputSupplier.supplyInput(driver, InputType.TEXT,
-					By.xpath("//label[text()='Current age']//following::input[1]"), null, inputData.get(0).get("age"),
-					false);
-		}
-		// find element by xpath for drop down for employement status field and pass
-		// option value from input data table
-		if (inputData.get(0).get("employment") != null) {
-
-			InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
-					"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[2]/div[1]/div[1]/div/div/div/div[2]"),
-					By.xpath("//label[text()='Employment status']//following::i[1]"),
-					inputData.get(0).get("employment"), true);
-
-		}
-
-		// // find element for salary and pass value from datatable
-		if ("Employed".equalsIgnoreCase(inputData.get(0).get("employment"))) {
-			if (!(inputData.get(0).get("salary")).isEmpty()) {
-
-				InputSupplier.supplyInput(driver, InputType.TEXT, By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div/input"),
-						null, inputData.get(0).get("salary"), false);
-
-			}
-
-			// find element for kiwiwsaver and and select radio button
-			if (!(inputData.get(0).get("kiwisaver")).isEmpty()) {
-
-				WebElement radioButton = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[4]/div/div/div/div[2]/div[1]/div[1]/div/div/div/div"));
-
-				radioButton.click();
-
-				List<WebElement> spans = radioButton.findElements(By.tagName("span"));
-				for (WebElement span : spans) {
-					if ((span.getText()).equals((inputData.get(0).get("kiwisaver")))) {
-						span.click();
-					}
-				}
-
-			}
-		}
+		setAge(age);
+		// find element by xpath for drop down for employment status field and pass
+		setEmployment(employment);
+		// find element for salary and pass value from datatable
+		setSalary(salary, employment);
+		// find element for kiwiwsaver and and select radio button
+		setKiwisaver(kiwisaver);
 		// Find pIR dropdown and pass values
-		if (!(inputData.get(0).get("PIR")).isEmpty()) {
-			if ((inputData.get(0).get("employment")).equalsIgnoreCase("Employed")) {
-
-				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div/div[2]"),
-						By.xpath(
-								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"),
-						inputData.get(0).get("PIR"), false);
-
-			} else {
-				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div/div[2]"),
-						By.xpath(
-								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"),
-						inputData.get(0).get("PIR"), false);
-
-			}
-
-		}
-
-		// find element for kiwiwsaver balance and pass value from datatable
-
-		if (inputData.get(0).get("kiwibalance") != null) {
-			InputSupplier.supplyInput(driver, InputType.TEXT,
-					By.xpath("//label[text()='Current KiwiSaver balance']//following::input[1]"), null,
-					inputData.get(0).get("kiwibalance"), false);
-
-		}
+		setPIR(pir, employment);
+    	// find element for kiwiwsaver balance and pass value from datatable
+		setKiwiBalance(kiwibalance);
 		// find element for volunteer and pass value from datatable
-		if (inputData.get(0).get("Voluntary") != null) {
-			InputSupplier.supplyInput(driver, InputType.TEXT,
-					By.xpath("//label[text()='Voluntary contributions']//following::input[1]"), null,
-					inputData.get(0).get("Voluntary"), false);
-
-		}
+		setVoluntary(voluntary);
 		// find dropdown for frequency and pass value from datatable
-
-		if (!(inputData.get(0).get("Frequency")).isEmpty()) {
-
-			if ((inputData.get(0).get("employment")).equalsIgnoreCase("Employed")) {
-
-				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[2]"),
-						By.xpath(
-								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div/span"),
-						inputData.get(0).get("Frequency"), false);
-
-			} else {
-				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[6]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[2]"),
-						By.xpath(
-								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[6]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div/span"),
-						inputData.get(0).get("Frequency"), false);
-
-			}
-		}
-		//
+		setFrequency(frequency, employment);
 		// find element for risk radio button and pass value from data table
-		if (!(inputData.get(0).get("profile")).isEmpty()) {
-			WebElement radioButton;
-			if ((inputData.get(0).get("employment")).equalsIgnoreCase("Employed")) {
-
-				radioButton = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[9]/div/div/div/div[2]/div[1]/div[1]/div/div/div"));
-
-				radioButton.click();
-			}
-
-			else {
-				radioButton = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[7]/div/div/div/div[2]/div[1]/div[1]/div/div/div"));
-
-				radioButton.click();
-			}
-			List<WebElement> spans = radioButton.findElements(By.tagName("span"));
-			for (WebElement span : spans) {
-				if ((span.getText()).equals((inputData.get(0).get("profile")))) {
-					span.click();
-				}
-			}
-		}
-
+		setProfile(profile, employment);
 		// find element for goals and pass value from data table
-		if (!(inputData.get(0).get("goal")).isEmpty()) {
-			InputSupplier.supplyInput(driver, InputType.TEXT,
-					By.xpath("//label[text()='Savings goal at retirement']//following::input[1]"), null,
-					inputData.get(0).get("goal"), false);
+		setGoal(goal);
+	}	
 
-		}
-	}
+
+	
 
 	@When("^user clicks on view projection$")
 	public void user_clicks_on_view_projection() {
@@ -205,11 +100,190 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 		}
 	}
 
-	@AfterMethod
-	public void close() {
+	
+	
+	/**
+	 * @param getKiwisaver
+	 */
+	public void  setKiwisaver(String kiwisaver) {
+		if (!(kiwisaver).isEmpty()) {
 
-		driver.close();
+			WebElement radioButton = driver.findElement(By.xpath(
+					"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[4]/div/div/div/div[2]/div[1]/div[1]/div/div/div/div"));
 
+			radioButton.click();
+
+			List<WebElement> spans = radioButton.findElements(By.tagName("span"));
+			for (WebElement span : spans) {
+				if ((span.getText()).equals((kiwisaver))) {
+					span.click();
+				}
+			}
+
+		}
 	}
 
+	/**
+	 * @param getEmployment
+	 * @param getSalary
+	 */
+	public void setSalary(String salary, String employment) {
+		if ("Employed".equalsIgnoreCase(employment)) {
+			if (!(salary).isEmpty()) {
+
+				InputSupplier.supplyInput(driver, InputType.TEXT, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div/input"),
+						null, salary, false);
+
+			}
+		}
+	}
+		
+	
+
+	/**
+	 * @param getGoal
+	 */
+	public void setGoal(String goal) {
+		if (!(goal).isEmpty()) {
+			InputSupplier.supplyInput(driver, InputType.TEXT,
+					By.xpath("//label[text()='Savings goal at retirement']//following::input[1]"), null, goal,
+					false);
+
+		}
+	}
+
+	/**
+	 * @param getProfile
+	 * @param getEmployment
+	 */
+	public void setProfile(String profile, String employment) {
+		if (!(profile).isEmpty()) {
+			WebElement radioButton;
+			if ((employment).equalsIgnoreCase("Employed")) {
+
+				radioButton = driver.findElement(By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[9]/div/div/div/div[2]/div[1]/div[1]/div/div/div"));
+
+				radioButton.click();
+			}
+
+			else {
+				radioButton = driver.findElement(By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[7]/div/div/div/div[2]/div[1]/div[1]/div/div/div"));
+
+				radioButton.click();
+			}
+			List<WebElement> spans = radioButton.findElements(By.tagName("span"));
+			for (WebElement span : spans) {
+				if ((span.getText()).equals((profile))) {
+					span.click();
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param getFrequency
+	 * @param getEmployment
+	 */
+	public void setFrequency(String frequency, String employment) {
+		if (!(frequency).isEmpty()) {
+
+			if ((employment).equalsIgnoreCase("Employed")) {
+
+				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[2]"),
+						By.xpath(
+								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div/span"),
+						frequency, false);
+
+			} else {
+				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[6]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[2]"),
+						By.xpath(
+								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[6]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div/span"),
+						frequency, false);
+
+			}
+		}
+	}
+
+	/**
+	 * @param getVoluntary
+	 */
+	public void setVoluntary(String voluntary) {
+		if (voluntary != null) {
+			InputSupplier.supplyInput(driver, InputType.TEXT,
+					By.xpath("//label[text()='Voluntary contributions']//following::input[1]"), null, voluntary,
+					false);
+
+		}
+	}
+
+	/**
+	 * @param getKiwiBalance
+	 */
+	public void setKiwiBalance(String kiwibalance) {
+		if (kiwibalance != null) {
+			InputSupplier.supplyInput(driver, InputType.TEXT,
+					By.xpath("//label[text()='Current KiwiSaver balance']//following::input[1]"), null, kiwibalance,
+					false);
+
+		}
+	}
+
+	/**
+	 * @param inputData
+	 * @param getPIR
+	 */
+	public void setPIR(String pir, String employment) {
+		if (!(pir).isEmpty()) {
+			if ((employment).equalsIgnoreCase("Employed")) {
+
+				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div/div[2]"),
+						By.xpath(
+								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"),
+						pir, false);
+
+			} else {
+				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div/div[2]"),
+						By.xpath(
+								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"),
+						pir, false);
+
+			}
+
+		}
+	}
+
+	/**
+	 * @param getEmployment
+	 */
+	public void setEmployment(String employment) {
+		if (employment != null) {
+
+			InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+					"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[2]/div[1]/div[1]/div/div/div/div[2]"),
+					By.xpath("//label[text()='Employment status']//following::i[1]"), employment, true);
+
+		}
+	}
+
+	public void setAge(String age) {
+		if (age != null) {
+
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+
+			WebElement chart = driver.findElement(By.xpath("//label[text()='Current age']//following::input[1]"));
+
+			js.executeScript("arguments[0].scrollIntoView();", chart);
+
+			InputSupplier.supplyInput(driver, InputType.TEXT,
+					By.xpath("//label[text()='Current age']//following::input[1]"), null, age, false);
+		}
+	}
+	
 }
