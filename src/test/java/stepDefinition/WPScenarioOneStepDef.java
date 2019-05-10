@@ -15,29 +15,36 @@ import org.testng.annotations.Test;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import utility.BrowserUtils;
+import utility.BrowserInstance;
 import utility.PropertiesFileReader;
 
-public class WPScenarioOneStepDef {
+public class WPScenarioOneStepDef extends BrowserInstance {
 
-	public static WebDriver driver;
+	//public static WebDriver driver;
 	PropertiesFileReader obj = new PropertiesFileReader();
 	String ageHelpText;
 
 	@Given("^Open url and navigate to Westpac KiwiSaver Scheme Retirement Calculator$")
 	public void open_url_and_navigate_to_Westpac_KiwiSaver_Scheme_Retirement_Calculator() throws Throwable {
 		Properties properties = obj.getProperty();
-		driver = BrowserUtils.OpenBrowser(driver, properties.getProperty("browser.name"),
+		BrowserInstance.OpenBrowser(properties.getProperty("browser.name"),
 				properties.getProperty("browser.baseURL"));
+		/*driver = BrowserInstance.OpenBrowser(driver, properties.getProperty("browser.name"),
+				properties.getProperty("browser.baseURL"));*/
 
 		Thread.sleep(3000);
-		WebElement mouseHoverElement = driver.findElement(By.linkText("KiwiSaver"));
-		Actions action = new Actions(driver);
-		WebElement clickElement = driver
-				.findElement(By.xpath("//*[@id=\"ubermenu-item-cta-kiwisaver-calculators-ps\"]"));
-		action.moveToElement(mouseHoverElement).moveToElement(clickElement).click().build().perform();
-
+//		WebElement mouseHoverElement = driver.findElement(By.linkText("KiwiSaver"));
+//		Actions action = new Actions(driver);
+//		WebElement clickElement = driver
+//				.findElement(By.xpath("//*[@id=\"ubermenu-item-cta-kiwisaver-calculators-ps\"]"));
+//		action.moveToElement(mouseHoverElement).moveToElement(clickElement).click().build().perform();
+//
+//		driver.findElement(By.linkText("Click here to get started.")).click();
+		
+		driver.findElement(By.linkText("KiwiSaver")).click();
+		driver.findElement(By.xpath("//*[@id=\"ubermenu-item-cta-kiwisaver-calculators-ps\"]")).click();
 		driver.findElement(By.linkText("Click here to get started.")).click();
+		
 		Thread.sleep(3000);
 	}
 
@@ -46,9 +53,7 @@ public class WPScenarioOneStepDef {
 
 		WebElement frame = driver.findElement(By.cssSelector("div#calculator-embed iframe"));
 		driver.switchTo().frame(frame);
-		driver.findElement(By.xpath(
-				"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[1]/div/div/div/div[2]/div[2]/div/div/div/button"))
-				.click();
+		driver.findElement(By.xpath("//label[text()='Current age']//following::i[1]")).click();
 		ageHelpText = driver
 				.findElement(By.xpath(
 						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[1]/div/div/div/div[2]/div[1]/div[2]/div/p"))
