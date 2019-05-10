@@ -1,53 +1,40 @@
 package utility;
 
-import java.io.IOException;
-import java.util.Properties;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class BrowserInstance
-{
-	public static WebDriver driver;
-	
-	public static void OpenBrowser(String browserName,String url) throws InterruptedException, Throwable
-	{
-		
-		PropertiesFileReader obj = new PropertiesFileReader();
-		if(browserName.equals("Chrome"))
-		{
-			Properties proobj = obj.getProperty();
-			System.setProperty("webdriver.chrome.driver",
-					"C:\\Users\\visitor\\assigment\\BrowserDrivers\\chromedriver_win32\\chromedriver.exe");
-			driver=new ChromeDriver();
-			driver.manage().window().maximize();
-			driver.get(proobj.getProperty("browser.baseURL"));
-			Thread.sleep(5000);
-			//return driver;	
+public class BrowserInstance {
+
+
+	private static String browserDriverPath = null;
+	public static WebDriver driver = null;
+
+
+	public static WebDriver getBrowser(String browserType, int browserVersion, String browserOS) {
+
+		if (null != browserType) {
+			if ("Chrome".equalsIgnoreCase(browserType)) {
+				if (null == driver) {
+
+					// browserDriverPath = "./src/main/BrowserDrivers/" + browserType + "/version/"
+					// + browserVersion + "/"
+					// + browserOS + "/chromedriver";
+//					if ("windows".equalsIgnoreCase(browserType)) {
+//						browserDriverPath = browserDriverPath + ".exe";
+//					}
+					browserDriverPath = "./BrowserDrivers/chromedriver_win32/chromedriver.exe";
+
+					System.setProperty("webdriver.chrome.driver", browserDriverPath);
+					driver = new ChromeDriver();
+					driver.manage().window().maximize();
+				}
+				return driver;
+
+			}
+
 		}
-			//return null;			
+		return null;
+
 	}
-	
-	/*public static WebDriver OpenBrowser(WebDriver driver,String browserName,String url) throws InterruptedException, Throwable
-	{
-		
-		PropertiesFileReader obj = new PropertiesFileReader();
-		if(browserName.equals("Chrome"))
-		{
-			Properties proobj = obj.getProperty();
-			System.setProperty("webdriver.chrome.driver",
-					"C:\\Users\\visitor\\assigment\\BrowserDrivers\\chromedriver_win32\\chromedriver.exe");
-			driver=new ChromeDriver();
-			driver.manage().window().maximize();
-			driver.get(proobj.getProperty("browser.baseURL"));
-			Thread.sleep(5000);
-			return driver;	
-		}
-			return null;			
-	}*/
 
 }

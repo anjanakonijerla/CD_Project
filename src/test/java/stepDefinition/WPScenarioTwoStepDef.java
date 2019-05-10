@@ -1,7 +1,6 @@
 package stepDefinition;
 
 import static org.junit.Assert.assertTrue;
-import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,40 +8,38 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
+import org.testng.annotations.AfterMethod;
 
 import cucumber.api.DataTable;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import utility.BrowserInstance;
+import utility.InputSupplier;
+import utility.InputType;
 import utility.PropertiesFileReader;
+import utility.Utilites;
 
 public class WPScenarioTwoStepDef extends BrowserInstance {
-	// public static WebDriver driver;
-	PropertiesFileReader obj = new PropertiesFileReader();
 
 	@Given("^I have a fields with following details$")
 	public void i_have_a_fields_with_following_details(DataTable dt) throws Throwable {
 
-		List<Map<String, String>> list = dt.asMaps(String.class, String.class);
+		List<Map<String, String>> inputData = dt.asMaps(String.class, String.class);
+		WebElement frame = driver.findElement(By.cssSelector("div#calculator-embed iframe"));
+		driver.switchTo().frame(frame);
 
 		// find element by xpath for age field and pass age value from input data table
-		if (list.get(0).get("age") != null) {
 
-			WebElement frame = driver.findElement(By.cssSelector("div#calculator-embed iframe"));
-			driver.switchTo().frame(frame);
+		if (inputData.get(0).get("age") != null) {
 
 			JavascriptExecutor js = (JavascriptExecutor) driver;
 
@@ -50,44 +47,33 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 
 			js.executeScript("arguments[0].scrollIntoView();", chart);
 
-			driver.findElement(By.xpath("//label[text()='Current age']//following::input[1]"))
-					.sendKeys(list.get(0).get("age"));
+			InputSupplier.supplyInput(driver, InputType.TEXT,
+					By.xpath("//label[text()='Current age']//following::input[1]"), null, inputData.get(0).get("age"), false);
 		}
 		// find element by xpath for drop down for employement status field and pass
 		// option value from input data table
-		if (list.get(0).get("employment") != null) {
-			String empvalue = list.get(0).get("employment");
-			WebElement dropdown = driver.findElement(By.xpath("//label[text()='Employment status']//following::i[1]"));
-			JavascriptExecutor executor = (JavascriptExecutor) driver;
-			executor.executeScript("arguments[0].click()", dropdown);
-			WebElement empStatusDropDown = driver.findElement(By.xpath(
-					"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[2]/div[1]/div[1]/div/div/div/div[2]"));
+		if (inputData.get(0).get("employment") != null) {
 
-			List<WebElement> lioptions = empStatusDropDown.findElements(By.tagName("li"));
-			for (WebElement lioption : lioptions) {
-				if ((lioption.findElement(By.tagName("span")).getText()).equals((list.get(0).get("employment")))) {
-					lioption.findElement(By.tagName("span")).click();
+			InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+					"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[2]/div[1]/div[1]/div/div/div/div[2]"),
+					By.xpath("//label[text()='Employment status']//following::i[1]"),
+					inputData.get(0).get("employment"), true);
 
-				}
-			}
 		}
+
 		// // find element for salary and pass value from datatable
+		if ("Employed".equalsIgnoreCase(inputData.get(0).get("employment"))) {
+			if (!(inputData.get(0).get("salary")).isEmpty()) {
 
+				InputSupplier.supplyInput(driver, InputType.TEXT, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div/input"),
+						null, inputData.get(0).get("salary"), false);
 
-		if (!(list.get(0).get("salary")).isEmpty()) {
-			try {
-				WebElement testsalary = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div/input"));
-				testsalary.sendKeys(list.get(0).get("salary"));
-			} catch (NoSuchElementException e) {
-				System.out.println(e.getMessage());
 			}
 
-		}
+			// find element for kiwiwsaver and and select radio button
+			if (!(inputData.get(0).get("kiwisaver")).isEmpty()) {
 
-		// find element for kiwiwsaver and and select radio button
-		if (!(list.get(0).get("kiwisaver")).isEmpty()) {
-			try {
 				WebElement radioButton = driver.findElement(By.xpath(
 						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[4]/div/div/div/div[2]/div[1]/div[1]/div/div/div/div"));
 
@@ -95,103 +81,75 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 
 				List<WebElement> spans = radioButton.findElements(By.tagName("span"));
 				for (WebElement span : spans) {
-					if ((span.getText()).equals((list.get(0).get("kiwisaver")))) {
+					if ((span.getText()).equals((inputData.get(0).get("kiwisaver")))) {
 						span.click();
 					}
 				}
-			} catch (NoSuchElementException e) {
-				System.out.println(e.getMessage());
+
 			}
 		}
 		// Find pIR dropdown and pass values
-		if (!(list.get(0).get("PIR")).isEmpty()) {
-			WebElement pirDropDown;
-			WebElement pirStatusDropDown;
+		if (!(inputData.get(0).get("PIR")).isEmpty()) {
+			if ((inputData.get(0).get("employment")).equalsIgnoreCase("Employed")) {
 
-			if ((list.get(0).get("employment")).equalsIgnoreCase("Employed")) {
-				pirDropDown = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"));
+				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div/div[2]"),
+						By.xpath(
+								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"),
+						inputData.get(0).get("PIR"),false);
 
-				pirDropDown.click();
+			} else {
+				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div/div[2]"),
+						By.xpath(
+								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"),
+						inputData.get(0).get("PIR"), false);
 
-				pirStatusDropDown = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[5]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div/div[2]"));
-
-			}
-
-			else {
-				pirDropDown = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div"));
-				pirDropDown.click();
-
-				pirStatusDropDown = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div/div[1]/div/div/div[2]"));
-
-			}
-			List<WebElement> lioptions1 = pirStatusDropDown.findElements(By.tagName("li"));
-			for (WebElement lioption1 : lioptions1) {
-				if ((lioption1.findElement(By.tagName("span")).getText()).equals((list.get(0).get("PIR")))) {
-					lioption1.findElement(By.tagName("span")).click();
-
-				}
 			}
 
 		}
 
 		// find element for kiwiwsaver balance and pass value from datatable
 
-		if (list.get(0).get("kiwibalance") != null) {
+		if (inputData.get(0).get("kiwibalance") != null) {
+			InputSupplier.supplyInput(driver, InputType.TEXT,
+					By.xpath("//label[text()='Current KiwiSaver balance']//following::input[1]"), null,
+					inputData.get(0).get("kiwibalance"), false);
 
-			
-			driver.findElement(By.xpath("//label[text()='Current KiwiSaver balance']//following::input[1]"))
-					.sendKeys(list.get(0).get("kiwibalance"));
-
-			
 		}
 		// find element for volunteer and pass value from datatable
-		if (list.get(0).get("Voluntary") != null) {
+		if (inputData.get(0).get("Voluntary") != null) {
+			InputSupplier.supplyInput(driver, InputType.TEXT,
+					By.xpath("//label[text()='Voluntary contributions']//following::input[1]"), null,
+					inputData.get(0).get("Voluntary"), false);
 
-			driver.findElement(By.xpath("//label[text()='Voluntary contributions']//following::input[1]"))
-					.sendKeys(list.get(0).get("Voluntary"));
-			
 		}
 		// find dropdown for frequency and pass value from datatable
 
-		if (!(list.get(0).get("Frequency")).isEmpty()) {
+		if (!(inputData.get(0).get("Frequency")).isEmpty()) {
 
-			WebElement freDropDown;
-			WebElement freStatusDropDown;
-			if ((list.get(0).get("salary")).equalsIgnoreCase("Employed")) {
-				freDropDown = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div/span"));
-				freDropDown.click();
+			if ((inputData.get(0).get("employment")).equalsIgnoreCase("Employed")) {
 
-				freStatusDropDown = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[2]"));
+				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[2]"),
+						By.xpath(
+								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[8]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div/span"),
+						inputData.get(0).get("Frequency"), false);
+
 			} else {
-				freDropDown = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[6]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div/span"));
-				freDropDown.click();
+				InputSupplier.supplyInput(driver, InputType.DROP_DOWN, By.xpath(
+						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[6]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[2]"),
+						By.xpath(
+								"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[6]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[1]/div/span"),
+						inputData.get(0).get("Frequency"), false);
 
-				freStatusDropDown = driver.findElement(By.xpath(
-						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[6]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/div[2]/div/div[2]"));
-
-			}
-			// WebElement ul2 = freStatusDropDown.findElement(By.tagName("ul"));
-			List<WebElement> lioptions2 = freStatusDropDown.findElements(By.tagName("li"));
-			for (WebElement lioption2 : lioptions2) {
-
-				if ((lioption2.findElement(By.tagName("span")).getText()).equals((list.get(0).get("Frequency")))) {
-					lioption2.findElement(By.tagName("span")).click();
-
-				}
 			}
 		}
 		//
 		// find element for risk radio button and pass value from data table
-		if (!(list.get(0).get("profile")).isEmpty()) {
+		if (!(inputData.get(0).get("profile")).isEmpty()) {
 			WebElement radioButton;
-			if ((list.get(0).get("employment")).equalsIgnoreCase("Employed")) {
+			if ((inputData.get(0).get("employment")).equalsIgnoreCase("Employed")) {
 
 				radioButton = driver.findElement(By.xpath(
 						"//*[@id=\"widget\"]/div/div[1]/div/div[1]/div/div[9]/div/div/div/div[2]/div[1]/div[1]/div/div/div"));
@@ -207,18 +165,18 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 			}
 			List<WebElement> spans = radioButton.findElements(By.tagName("span"));
 			for (WebElement span : spans) {
-				if ((span.getText()).equals((list.get(0).get("profile")))) {
+				if ((span.getText()).equals((inputData.get(0).get("profile")))) {
 					span.click();
 				}
 			}
 		}
 
 		// find element for goals and pass value from data table
-		if (!(list.get(0).get("goal")).isEmpty()) {
+		if (!(inputData.get(0).get("goal")).isEmpty()) {
+			InputSupplier.supplyInput(driver, InputType.TEXT,
+					By.xpath("//label[text()='Savings goal at retirement']//following::input[1]"), null,
+					inputData.get(0).get("goal"), false);
 
-			driver.findElement(By.xpath("//label[text()='Savings goal at retirement']//following::input[1]"))
-					.sendKeys(list.get(0).get("goal"));
-			
 		}
 	}
 
@@ -240,24 +198,18 @@ public class WPScenarioTwoStepDef extends BrowserInstance {
 		WebElement chart = driver.findElement(By.className("results-heading"));
 
 		js.executeScript("arguments[0].scrollIntoView();", chart);
-		// Take screenshot and store as a file format
-		File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		try {
-			// now copy the screenshot to desired location using copyFile //method
+		Utilites.captureScreenShot(driver, "StepTwo");
 
-			String timestamp = new SimpleDateFormat("yyyy_MM_dd__hh_mm_ss").format(new Date());
-
-			FileUtils.copyFile(src, new File(
-					"C:\\Users\\visitor\\assigment _Backup\\resultscreens\\" + "Screenshot" + timestamp + ".png"));
-		}
-
-		catch (IOException e) {
-			System.out.println(e.getMessage());
-
-		}
 
 		driver.navigate().refresh();
-		Thread.sleep(3000);
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+	}
+	
+	@AfterMethod
+	public void close() {
+		
+		driver.close();
+		
 	}
 
 }
