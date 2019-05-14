@@ -35,7 +35,14 @@ public class WPScenarioOneStepDef extends BrowserInstance {
 	@Given("^Open url and navigate to Westpac KiwiSaver Scheme Retirement Calculator$")
 	public void open_url_and_navigate_to_Westpac_KiwiSaver_Scheme_Retirement_Calculator() throws IOException, InterruptedException {
 
-		driver.findElement(By.linkText("KiwiSaver")).click();
+// 		driver.findElement(By.linkText("KiwiSaver")).click();
+// 		driver.findElement(By.xpath("//*[@id=\"ubermenu-item-cta-kiwisaver-calculators-ps\"]")).click();
+// 		driver.findElement(By.linkText("Click here to get started.")).click();
+// 		Thread.sleep(3000);
+		
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(driver.findElement(By.linkText("KiwiSaver"))).build().perform();
 		driver.findElement(By.xpath("//*[@id=\"ubermenu-item-cta-kiwisaver-calculators-ps\"]")).click();
 		driver.findElement(By.linkText("Click here to get started.")).click();
 		Thread.sleep(3000);
