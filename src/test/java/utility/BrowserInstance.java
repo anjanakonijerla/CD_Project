@@ -15,6 +15,7 @@ public class BrowserInstance {
 		if (null != browserType) {
 			if ("Chrome".equalsIgnoreCase(browserType)) {
 				if (null == driver) {
+					
 
 					// browserDriverPath = "./src/main/BrowserDrivers/" + browserType + "/version/"
 					// + browserVersion + "/"
