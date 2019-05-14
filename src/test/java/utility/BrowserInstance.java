@@ -23,6 +23,9 @@ public class BrowserInstance {
 //						browserDriverPath = browserDriverPath + ".exe";
 //					}
 					browserDriverPath = "./BrowserDrivers/chromedriver_linux64/chromedriver";
+					
+					String path = System.getProperty("user.dir");
+					System.out.println("========== this is the path:"+path)
 
 					System.setProperty("webdriver.chrome.driver", browserDriverPath);
 					driver = new ChromeDriver();
