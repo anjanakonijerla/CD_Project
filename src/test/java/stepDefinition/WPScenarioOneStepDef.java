@@ -30,7 +30,8 @@ import utility.Utilites;
 public class WPScenarioOneStepDef extends BrowserInstance {
 
 	String ageHelpText;
-
+	
+	
 	@Given("^Open url and navigate to Westpac KiwiSaver Scheme Retirement Calculator$")
 	public void open_url_and_navigate_to_Westpac_KiwiSaver_Scheme_Retirement_Calculator() throws IOException, InterruptedException {
 

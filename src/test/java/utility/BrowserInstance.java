@@ -22,7 +22,7 @@ public class BrowserInstance {
 //					if ("windows".equalsIgnoreCase(browserType)) {
 //						browserDriverPath = browserDriverPath + ".exe";
 //					}
-					browserDriverPath = "./BrowserDrivers/chromedriver_win32/chromedriver.exe";
+					browserDriverPath = "./BrowserDrivers/chromedriver_linux64/chromedriver";
 
 					System.setProperty("webdriver.chrome.driver", browserDriverPath);
 					driver = new ChromeDriver();
@@ -33,6 +33,7 @@ public class BrowserInstance {
 			}
 
 		}
+	
 		return null;
 
 	}
