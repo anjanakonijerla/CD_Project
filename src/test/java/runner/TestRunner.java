@@ -30,7 +30,5 @@ public class TestRunner extends BrowserInstance {
 	public static void writeExtentReport() {
 		driver.quit();
 		Reporter.loadXMLConfig(new File("config/report.xml"));
-		
-
 	}
 }
